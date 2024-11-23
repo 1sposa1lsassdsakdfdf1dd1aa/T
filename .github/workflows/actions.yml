@@ -2,7 +2,7 @@ name: run script main.py
 
 on:
   schedule:
-    - cron: '0 */12 * * *' # Runs every 12 Hours
+    - cron: '0 */4 * * *' # Runs every 6 hours 
 
 jobs:
   build:
@@ -24,20 +24,19 @@ jobs:
           
       - name: execute py script # run main.py
         env:
-          api_live_matches: ${{ secrets.api_live_matches }}
-          file_password: ${{ secrets.file_password }}
+          TOFFEE_KEY: ${{ secrets.TOFFEE_KEY }}
+          TOFFEE_API: ${{ secrets.TOFFEE_API }}
           password: ${{ secrets.password }}
 
 
-        run: python main.py
+        run: python decrypt.py
           
       - name: commit files
         run: |
-          rm -rf __pycache__
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "👉 updated M3U8 and Cookie" --allow-empty)
+          git diff-index --quiet HEAD || (git commit -a -m "👉 updated M3U8 and Cookie Data" --allow-empty)
           
       - name: push changes
         uses: ad-m/github-push-action@v0.6.0
